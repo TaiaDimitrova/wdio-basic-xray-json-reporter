@@ -53,18 +53,5 @@ function writeFile(dir, mergedResults, customFileName) {
         fs.writeFileSync(filePath, JSON.stringify(mergedResults));
     } catch (error) {
         console.log("ERROR on write in writeFile: ", error);
-    }
+  }
 }
-
-const mergeResults = (...args) => {
-    const dir = args[0] || process.argv[2];
-    const filePattern = args[1] || process.argv[3];
-    const customFileName = args[2] || process.argv[4];
-
-    const rawData = getDataFromFiles(dir, filePattern);
-    const mergedResults = mergeData(rawData);
-
-    writeFile(dir, mergedResults, customFileName);
-};
-
-module.exports = mergeResults;
