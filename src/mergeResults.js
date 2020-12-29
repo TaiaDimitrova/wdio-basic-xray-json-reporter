@@ -15,7 +15,9 @@ function writeFile(dir, mergedResults, customFileName) {
     }
     
 }
-
+function hello(){
+    console.log('Hello guys!');
+}
 function getDataFromFiles(dir, filePattern) {
     const fileNames = fs
         .readdirSync(dir)
@@ -70,7 +72,10 @@ const mergeResults = (...args) => {
 
     const rawData = getDataFromFiles(dir, filePattern);
     const mergedResults = mergeData(rawData);
+    hello();
     writeFile(dir, mergedResults, customFileName);
+    
 };
+ 
 
 module.exports = mergeResults;
