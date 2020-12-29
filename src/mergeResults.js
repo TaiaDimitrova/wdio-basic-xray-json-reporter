@@ -9,7 +9,7 @@ function getDataFromFiles(dir, filePattern) {
     let fileContent = '';
 
     try {
-      fileContent = fs.readFileSync(`${dir}/${fileName}`, 'utf8');
+      fileContent = fs.readFileSync(`${dir}/${fileName}`);
 
       data.push(JSON.parse(fileContent));
     } catch (error) {
@@ -21,8 +21,10 @@ function getDataFromFiles(dir, filePattern) {
 }
 
 function mergeData(rawData) {
-  console.log('rawData: ', rawData);
+
   const mergedResults = {
+    testExecutionKey: rawData[0].testExecutionKey,
+    info: rawData[0].info,
     tests: [],
   };
 
