@@ -21,8 +21,8 @@ function getDataFromFiles(dir, filePattern) {
         let fileContent = "";
         
         try {
-            fileContent = fs.readFileSync(`${dir}/${fileName}`)
-            const fileContentParsed = JSON.parse(fileContent)
+            fileContent = fs.readFileSync(`${dir}/${fileName}`);
+            const fileContentParsed = JSON.parse(fileContent);
             data.push(JSON.parse(fileContentParsed));
         } catch (error) {
             console.log('JSON parse failed with error: ', error)
@@ -36,6 +36,7 @@ function getDataFromFiles(dir, filePattern) {
 function mergeData(rawData) {
     let mergedResults;
 
+    console.log('RAW DATA: ',rawData);
     rawData.forEach((data) => {
         if (mergedResults === undefined) {
             // use the first result so that we have the right shape
@@ -53,17 +54,21 @@ function mergeData(rawData) {
 
     mergedResults.tests.sort((a, b) => (a.status < b.status ? 1 : -1));
 
-    console.log('MERGED result set: ', mergedResults)
+    console.log('MERGED result set: ', mergedResults);
     return mergedResults;
 }
 
 function writeFile(dir, mergedResults, customFileName) {
     let fileName = customFileName || "wdio-merged.json";
     const filePath = path.join(dir, fileName);
+    console.log('FILEPATH: ', filePath)
+    console.log('DIR: ', dir)
+    console.log('mergedResults: ', mergedResults)
+    console.log('customFileName: ', customFileName)
     try {
         fs.writeFileSync(filePath, JSON.stringify(mergedResults));
     } catch (error) {
-        console.log('ERROR on write in writeFile: ', error)
+        console.log('ERROR on write in writeFile: ', error);
     }
     
 }
