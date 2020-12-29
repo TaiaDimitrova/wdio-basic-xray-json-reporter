@@ -1,68 +1,67 @@
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
 function getDataFromFiles(dir, filePattern) {
-    const fileNames = fs
-        .readdirSync(dir)
-        .filter((file) => file.match(filePattern));
-    const data = [];
+  const fileNames = fs.readdirSync(dir).filter((file) => file.match(filePattern));
+  const data = [];
 
-    fileNames.forEach((fileName) => {
-        let fileContent = "";
+  fileNames.forEach((fileName) => {
+    let fileContent = '';
 
-        try {
-            fileContent = fs.readFileSync(`${dir}/${fileName}`, "utf8");
-            data.push(JSON.parse(fileContent));
-        } catch (error) {
-            console.log("error getDataFromFiles: ", error);
-        }
-    });
+    try {
+      fileContent = fs.readFileSync(`${dir}/${fileName}`, 'utf8');
 
-    return data;
+      data.push(JSON.parse(fileContent));
+    } catch (error) {
+      console.log('error getDataFromFiles: ', error);
+    }
+  });
+
+  return data;
 }
 
 function mergeData(rawData) {
-    console.log("rawData: ", rawData);
-    const mergedResults = {
-        tests: [],
-    };
+  console.log('rawData: ', rawData);
+  const mergedResults = {
+    tests: [],
+  };
 
-    rawData.forEach((data) => {
-        if (mergedResults === undefined) {
-            Object.assign(mergedResults, data);
-        } else {
-            mergedResults.tests.push(...data.tests);
-        }
-    });
+  rawData.forEach((data) => {
+    if (mergedResults === undefined) {
+      Object.assign(mergedResults, data);
+    } else {
+      mergedResults.tests.push(...data.tests);
+    }
+  });
 
-    mergedResults.tests.sort((a, b) => (a.status < b.status ? 1 : -1));
+  mergedResults.tests.sort((a, b) => (a.status < b.status ? 1 : -1));
 
-    return mergedResults;
+  return mergedResults;
 }
 
 function writeFile(dir, mergedResults, customFileName) {
-    let fileName = customFileName || "wdio-merged.json";
-    const filePath = path.join(dir, fileName);
-    console.log("FILEPATH: ", filePath);
-    console.log("DIR: ", dir);
-    console.log("mergedResults: ", mergedResults);
-    console.log("customFileName: ", customFileName);
-    try {
-        fs.writeFileSync(filePath, JSON.stringify(mergedResults));
-    } catch (error) {
-        console.log("ERROR on write in writeFile: ", error);
-    }
+  let fileName = customFileName || 'wdio-merged.json';
+  const filePath = path.join(dir, fileName);
+  console.log('FILEPATH: ', filePath);
+  console.log('DIR: ', dir);
+  console.log('mergedResults: ', mergedResults);
+  console.log('customFileName: ', customFileName);
+  try {
+    fs.writeFileSync(filePath, JSON.stringify(mergedResults));
+  } catch (error) {
+    console.log('ERROR on write in writeFile: ', error);
+  }
 }
 
 const mergeResults = (...args) => {
-    const dir = args[0] || process.argv[2];
-    const filePattern = args[1] || process.argv[3];
-    const customFileName = args[2] || process.argv[4];
+  const dir = args[0] || process.argv[2];
+  const filePattern = args[1] || process.argv[3];
+  const customFileName = args[2] || process.argv[4];
 
-    const rawData = getDataFromFiles(dir, filePattern);
-    const mergedResults = mergeData(rawData);
+  const rawData = getDataFromFiles(dir, filePattern);
+  const mergedResults = mergeData(rawData);
 
-    writeFile(dir, mergedResults, customFileName);
+  writeFile(dir, mergedResults, customFileName);
 };
 
 module.exports = mergeResults;
