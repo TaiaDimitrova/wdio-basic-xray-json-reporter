@@ -18,8 +18,10 @@ function getDataFromFiles(dir, filePattern) {
     const data = [];
 
     fileNames.forEach((fileName) => {
-        const fileContent = fs.readFileSync(`${dir}/${fileName}`)
+        let fileContent = "";
+        
         try {
+            fileContent = fs.readFileSync(`${dir}/${fileName}`)
             const fileContentParsed = JSON.parse(fileContent)
             data.push(JSON.parse(fileContentParsed));
         } catch (error) {
@@ -58,7 +60,12 @@ function mergeData(rawData) {
 function writeFile(dir, mergedResults, customFileName) {
     let fileName = customFileName || "wdio-merged.json";
     const filePath = path.join(dir, fileName);
-    fs.writeFileSync(filePath, JSON.stringify(mergedResults));
+    try {
+        fs.writeFileSync(filePath, JSON.stringify(mergedResults));
+    } catch (error) {
+        console.log('ERROR on write in writeFile: ', error)
+    }
+    
 }
 
 module.exports = mergeResults;
